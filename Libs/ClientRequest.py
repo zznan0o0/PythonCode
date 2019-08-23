@@ -4,9 +4,9 @@ import json
 
 class ClientRequest:
   def __init__(self):
-    self.__ApiUserId = '111'
-    self.__token = '111'
-    self.__host = 'http://0.0.0.0:9091/'
+    self.__ApiUserId = 'U548163'
+    self.__token = 'yYkf3y1P7CeRV3i9C89cMXgjpq3aN0Qt'
+    self.__host = 'http://52.83.191.213:8081/'
 
 
   def url(self, url):

@@ -73,10 +73,7 @@ class KHandleData:
     return d
 
   def getVals(self, d, k, intval=''):
-    arr = []
-    for v in d:
-      arr.append(self.getVal(v, k, intval))
-    return arr
+    return [self.getVal(v, k, intval) for v in d]
 
   def getVal(self, d, k, intval = ''):
     return intval if k not in d.keys() else d[k]

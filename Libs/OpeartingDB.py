@@ -18,7 +18,7 @@ class OpeartingDB:
     connect = pymysql.connect(database=db_config['database'], user=db_config['user'], password=db_config['password'], host=db_config['host'], port=db_config['port'], cursorclass=pymysql.cursors.DictCursor,charset="utf8")
     cursor = connect.cursor()
 
-    self.CONNECTPOOL[database] = cursor
+    self.CONNECTPOOL[database] = connect
     self.CURSORPOOL[database] = cursor
 
     return connect, cursor
@@ -49,8 +49,7 @@ class OpeartingDB:
 
     keys = data[0].keys()
     s = ['%s' for i in range(len(keys))]
-    sql = "insert into %s (%s) values (%s)" % (table, ','.join(keys), s)
-
+    sql = "insert into %s (%s) values (%s)" % (table, ','.join(keys), ','.join(s))
     tuple_list = self.covertTuple(data, keys)
     self.CURSORPOOL[database].executemany(sql, tuple_list)
   
