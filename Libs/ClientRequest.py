@@ -25,6 +25,14 @@ class ClientRequest:
     res = urllib.request.urlopen(request, submit_data)
     return res.read().decode('utf-8')
   
+  def postJson(self, url, submit_data):
+    submit_data = json.dumps(submit_data)
+    submit_data = bytes(submit_data, 'utf8')
+    request = urllib.request.Request(url)
+    request.add_header("Content-Type","application/json;charset=utf-8")
+    res = urllib.request.urlopen(request, submit_data)
+    return res.read().decode('utf-8')
+  
   def postGo(self, url, submit_data):
     url = self.url(url)
     submit_data = self.mergeToken(submit_data)
