@@ -2,10 +2,11 @@
 import pymysql
 import json
 import copy
+import math
 
 
 class OpeartingDB:
-    def __init__(self, config_path):
+    def __init__(self, config_path='Config/database.json'):
         db_config_file = open(config_path)
         db_config = json.load(db_config_file)
         db_config_file.close()
@@ -50,10 +51,68 @@ class OpeartingDB:
 
         keys = data[0].keys()
         s = ['%s' for i in range(len(keys))]
-        sql = "insert into %s (%s) values (%s)" % (
+        sql = "insert into %s (%s) values (%s);" % (
             table, ','.join(keys), ','.join(s))
         tuple_list = self.covertTuple(data, keys)
         self.CURSORPOOL[database].executemany(sql, tuple_list)
+    
+    def queryUpdateSetStr(self, data):
+        keys = [v for v in data]
+        setstr = ",".join([ "%s" % (v) + "=%s" for v in keys ])
+        values = self.covertTuple([data], keys)[0]
+        return {'str': setstr, 'keys': keys, 'values': values}
+
+    def updateById(self, data, database, table, idFiled):
+        if(len(data) < 1):
+            return 0
+        
+        keys = [v for v in data[0]]
+        setstr = ",".join([ "%s" % (v) + "=%s" for v in keys ])
+
+        sql = ("update %s set %s " % (table, setstr)) + (" where %s=" % (idFiled) + "%s;")
+        keys.append(idFiled)
+
+        tuple_list = self.covertTuple(data, keys)
+        self.CURSORPOOL[database].executemany(sql, tuple_list)
+    
+    def insertUpdateDataById(self, data, database, table, idFiled):
+        ids = [ v[idFiled] for v in data ]
+        sql = "select %s from %s where %s in (%s);" % (idFiled, table, idFiled, self.getWhereInString(ids))
+        self.CURSORPOOL[database].execute(sql)
+        ids = self.CURSORPOOL[database].fetchall()
+        ids = [ v[idFiled] for v in ids ]
+        update_data = []
+        insert_data = []
+        for v in data:
+            if v[idFiled] in ids:
+                update_data.append(v)
+            else:
+                insert_data.append(v)
+        
+        self.updateById(update_data, database, table, idFiled)
+        self.insert(insert_data, database, table)
+
+
+    def insertBigData(self, data, database, table):
+        if(len(data) < 1): return 0
+
+        keys = data[0].keys()
+        s = ['%s' for i in range(len(keys))]
+        sql = "insert into %s (%s) values (%s);" % (table, ','.join(keys), ','.join(s))
+
+        per_count = 10
+        sur_count = len(data) % per_count
+        count = math.ceil(len(data) / per_count)
+
+        tuple_list = self.covertTuple(data, keys)
+
+        for ci in range(count):
+            star_num = ci * per_count
+            end_num = per_count + star_num
+            if ci == count - 1:
+                end_num = sur_count + star_num
+
+        self.CURSORPOOL[database].executemany(sql, tuple_list[star_num:end_num])
 
     def addQuotes(self, x):
         return "'%s'" % x

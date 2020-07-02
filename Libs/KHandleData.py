@@ -1,4 +1,66 @@
 class KHandleData:
+
+    '''
+    转化字段名
+    @param d array 
+    --- eg start ---
+    [
+        {'k1': 'v1'}
+    ]
+    --- eg end ---
+    @param ks array
+    --- eg start ---
+    [['k3', 'k1', 'v'], ['k4', 'k2', '']]
+    --- eg end ---
+
+    @return array
+    --- eg start ---
+    [{'k3': 'v3', 'k4': ''}]
+    --- eg end ---
+    '''
+    def convertFiled(self, d, ks):
+        arr = []
+        for v in d:
+            dic = {}
+            for kv in ks:
+                dic[kv[0]] = self.getVal(v, kv[1], kv[2]) 
+            
+            arr.append(dic)
+        
+        return arr
+
+    '''
+    转化没有或者None的字段
+    @param d array 
+    --- eg start ---
+    [
+        {'k1': None}
+    ]
+    --- eg end ---
+    @param ks array
+    --- eg start ---
+    [['k1', 'v1'], ['k2', 'v2']]
+    --- eg end ---
+
+    @return array
+    --- eg start ---
+    [{'k1': 'v1', 'k2': 'k2'}]
+    --- eg end ---
+    '''
+    
+    def setDefaultVal(self, d, ks):
+        arr = []
+        for v in d:
+            dic = {}
+            for kv in ks:
+                dic[kv[0]] = self.getVal(v, kv[0], kv[1]) 
+                if dic[kv[0]] == None:
+                    dic[kv[0]] = kv[1]
+
+            arr.append(dic)
+        
+        return arr
+
     def distributePropsArray(self, d1, d2, k1, k2, p):
         def fn(v1, v2, k):
             for pv in p:
