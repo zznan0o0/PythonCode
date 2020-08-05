@@ -7,7 +7,7 @@ import yaml
 
 
 class OpeartingDB:
-    def __init__(self, config_path='Config/database.json', db_config=False):
+    def __init__(self, config_path='Config/database.yaml', db_config=False):
         if not db_config:
             db_config_file = open(config_path)
             db_config = yaml.load(db_config_file)
