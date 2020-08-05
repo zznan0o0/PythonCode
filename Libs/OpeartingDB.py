@@ -1,15 +1,18 @@
 # import psycopg2
 import pymysql
-import json
+# import json
 import copy
 import math
+import yaml
 
 
 class OpeartingDB:
-    def __init__(self, config_path='Config/database.json'):
-        db_config_file = open(config_path)
-        db_config = json.load(db_config_file)
-        db_config_file.close()
+    def __init__(self, config_path='Config/database.json', db_config=False):
+        if not db_config:
+            db_config_file = open(config_path)
+            db_config = yaml.load(db_config_file)
+            db_config_file.close()
+
         self._config = db_config
         self.CONNECTPOOL = {}
         self.CURSORPOOL = {}
@@ -170,3 +173,12 @@ class OpeartingDB:
 
     def isKey(self, k, data, v=''):
         return v if k not in data.keys() else data[k]
+
+
+
+if __name__ == "__main__":
+    opeartingDB = OpeartingDB()
+    opeartingDB.connection('db_warehouse_glass')
+    opeartingDB.CURSORPOOL['db_warehouse_glass'].execute('select * from tb_glass limit 10;')
+    print(opeartingDB.CURSORPOOL['db_warehouse_glass'].fetchall())
+    opeartingDB.closeAll()
