@@ -21,11 +21,11 @@ class KFS:
 
     def writeline(self, filename, content):
         fw = open(filename, 'a')
-        fw.write(content + '\r')
+        fw.write(content + '\n')
         fw.close()
 
     def writelines(self, filename, content):
-        content = map(lambda x: x + '\r', content)
+        content = map(lambda x: x + '\n', content)
         fw = open(filename, 'a')
         fw.writelines(content)
         fw.close()
