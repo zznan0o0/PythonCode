@@ -30,6 +30,11 @@ class KFS:
         fw.writelines(content)
         fw.close()
 
+    def writeAll(self, filename, content):
+        fw = open(filename, 'w')
+        fw.wirte(content)
+        fw.close()
+
 
 if __name__ == '__main__':
     kfs = KFS()
