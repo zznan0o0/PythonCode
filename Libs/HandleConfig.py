@@ -9,6 +9,11 @@ class HandleConfig:
         config_file = open('Config/%s.%s' % (name, file_type))
         return yaml.load(config_file)
     
+    @staticmethod
+    def readFile(name):
+        config_file = open(name)
+        return yaml.load(config_file)
+    
 
 
 if __name__ == "__main__":

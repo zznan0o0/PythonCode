@@ -32,7 +32,7 @@ class KFS:
 
     def writeAll(self, filename, content):
         fw = open(filename, 'w')
-        fw.wirte(content)
+        fw.write(content)
         fw.close()
 
 
