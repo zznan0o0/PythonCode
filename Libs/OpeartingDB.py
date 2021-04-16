@@ -1,9 +1,11 @@
 # import psycopg2
+# import pymssql
 import pymysql
 # import json
 import copy
 import math
 import yaml
+
 
 
 class OpeartingDB:
@@ -16,6 +18,12 @@ class OpeartingDB:
         self._config = db_config
         self.CONNECTPOOL = {}
         self.CURSORPOOL = {}
+
+    def connectionMSSql(self, database):
+        db_config = self._config[database]
+        connect = pymssql.connect(database=db_config['database'], user=db_config['user'], password=db_config['password'], host=db_config['host'], port=db_config['port'],charset="utf8")
+        cursor = connect.cursor(as_dict=True)
+        return connect, cursor
 
     def connection(self, database):
         db_config = self._config[database]
